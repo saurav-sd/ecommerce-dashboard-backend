@@ -76,7 +76,6 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise credentials_exception
 
-
 def require_role(required_roles: list[str]):
     def role_checker(current_user: dict = Depends(get_current_user)):
         if current_user["role"] not in required_roles:

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.db.init_db import init_db
 from app.api.v1.endpoints import auth
+from app.api.v1.endpoints import product
 
 app = FastAPI()
 
@@ -18,3 +19,5 @@ def startup_event():
     print("Database initialized.")
 
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+
+app.include_router(product.routes)
