@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from app.db.init_db import init_db
 from app.api.v1.endpoints import auth
 from app.api.v1.endpoints import product
+from fastapi.staticfiles import StaticFiles
+from app.api.v1.endpoints import category
 
 app = FastAPI()
 
@@ -21,3 +23,7 @@ def startup_event():
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 
 app.include_router(product.routes)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+app.include_router(category.router)

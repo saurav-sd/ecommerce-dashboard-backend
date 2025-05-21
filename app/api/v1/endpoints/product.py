@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.db.schemas.product import ProductCreate, ProductUpdate, ProductOut
 from typing import List
 from app.db.models.product import Product
 from app.crud.product import create_product, get_all_products, get_product, update_product, delete_product
+import shutil
+import uuid
+import os
 
 
 routes = APIRouter(prefix="/products", tags=["Products"])
@@ -55,3 +58,16 @@ def delete_product_by_id(product_id: int, db: Session = Depends(get_db)):
     deleted = delete_product(db, product_id)
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+    
+
+@routes.post("/upload-image/")
+async def upload_image(file: UploadFile = File(...)):
+    file_extension = os.path.splitext(file.filename)[1]
+    file_name = f"{uuid.uuid4()}{file_extension}"
+    file_path = f"static/images/{file_name}"
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    image_url = f"/static/images/{file_name}"
+    return {"image_url": image_url}
