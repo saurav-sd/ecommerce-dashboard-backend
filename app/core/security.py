@@ -8,6 +8,8 @@ import secrets
 from typing import Optional
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import HTTPException, status, Depends
+from app.db.models.user import User
+from app.db.session import get_db
 
 
 
@@ -85,3 +87,12 @@ def require_role(required_roles: list[str]):
             )
         return current_user
     return role_checker
+
+def get_current_active_user(
+    current_user_data: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> User:
+    user = db.query(User).filter(User.id == current_user_data["user_id"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user

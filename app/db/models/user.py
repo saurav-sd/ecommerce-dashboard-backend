@@ -24,3 +24,4 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")
+    orders = relationship("Order", back_populates="user")

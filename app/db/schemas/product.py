@@ -10,6 +10,7 @@ class ProductBase(BaseModel):
     stock: int = Field(0, example=100)
     category: Optional[str] = Field(None, example="Electronics")
     image: Optional[str] = Field(None, example="https://example.com/image.jpg")
+    category_id: Optional[int]
 
 # Schema for creating a product
 class ProductCreate(ProductBase):
