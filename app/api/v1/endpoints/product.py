@@ -4,10 +4,12 @@ from app.db.session import get_db
 from app.db.schemas.product import ProductCreate, ProductUpdate, ProductOut
 from typing import List
 from app.db.models.product import Product
+from app.db.models.category import Category
 from app.crud.product import create_product, get_all_products, get_product, update_product, delete_product
 import shutil
 import uuid
 import os
+from sqlalchemy.exc import IntegrityError
 
 
 routes = APIRouter(prefix="/products", tags=["Products"])
@@ -17,8 +19,18 @@ def Create_product(product: ProductCreate, db: Session = Depends(get_db)):
     """
     Create a new product.
     """
+    # try:
+    category = db.query(Category).filter(Category.id == product.category_id).first()
+    if not category:
+        raise HTTPException(status_code=400, detail="Invalid category_id")
     db_product = create_product(db, product)
     return db_product
+    # except IntegrityError as e:
+    #     db.rollback()
+    #     raise HTTPException(
+    #         status_code=400,
+    #         detail="Invalid category_id or related foreign key does not exist."
+    #     )
 
 
 @routes.get("/", response_model=List[ProductOut])

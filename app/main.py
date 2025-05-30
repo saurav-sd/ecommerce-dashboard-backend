@@ -5,6 +5,7 @@ from app.api.v1.endpoints import product
 from fastapi.staticfiles import StaticFiles
 from app.api.v1.endpoints import category
 from app.api.v1.endpoints import orders
+from app.api.v1.endpoints import cart
 
 app = FastAPI()
 
@@ -30,3 +31,5 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(category.router)
 
 app.include_router(orders.router)
+
+app.include_router(cart.router)

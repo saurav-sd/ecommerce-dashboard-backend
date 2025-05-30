@@ -8,7 +8,6 @@ class ProductBase(BaseModel):
     description: Optional[str] = Field(None, example="Ergonomic wireless mouse with 2.4GHz connection")
     price: float = Field(..., example=19.99)
     stock: int = Field(0, example=100)
-    category: Optional[str] = Field(None, example="Electronics")
     image: Optional[str] = Field(None, example="https://example.com/image.jpg")
     category_id: Optional[int]
 
@@ -22,7 +21,6 @@ class ProductUpdate(BaseModel):
     description: Optional[str]
     price: Optional[float]
     stock: Optional[int]
-    category: Optional[str]
     image: Optional[str]
 
 # Schema for returning a product in responses

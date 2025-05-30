@@ -12,3 +12,4 @@ class Category(Base):
 
     products = relationship("Product", back_populates="category")
 
+    
