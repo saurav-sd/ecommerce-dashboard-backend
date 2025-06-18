@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.db.schemas.order import OrderCreate, OrderRead
+from app.db.schemas.order import OrderCreate, OrderRead, OrderStatusUpdate, OrderCountResponse
 from app.db.models.order import Order
 from app.db.session import get_db
-from app.crud.order import create_order, get_order, update_order_status
+from app.crud.order import create_order, get_order, update_order_status, get_orders_by_user
 from app.api.v1.endpoints import auth
 from typing import List
 from app.core.security import get_current_active_user
@@ -11,7 +11,7 @@ from app.core.security import get_current_active_user
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
-@router.post("/orders/", response_model=OrderRead, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=OrderRead, status_code=status.HTTP_201_CREATED)
 async def create_new_order(
     order: OrderCreate,
     db: Session = Depends(get_db),
@@ -22,8 +22,17 @@ async def create_new_order(
     """
     return create_order(db=db, order=order, user_id=current_user.id)
 
+@router.get("/", response_model=List[OrderRead])
+async def get_all_orders(
+    db: Session = Depends(get_db),
+    current_user: auth.User = Depends(get_current_active_user)
+):
+    """
+    Get all orders for the current user.
+    """
+    return get_orders_by_user(db=db, user_id=current_user.id)
 
-@router.get("/orders/{order_id}", response_model=OrderRead)
+@router.get("/{order_id}", response_model=OrderRead)
 async def read_order(
     order_id: int,
     db: Session = Depends(get_db),

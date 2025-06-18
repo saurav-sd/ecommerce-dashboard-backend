@@ -25,3 +25,6 @@ class UserOut(UserBase):
 
     class Config:
         orm_mode = True
+
+class RefreshTokenSchema(BaseModel):
+    refresh_token: str

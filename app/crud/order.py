@@ -34,6 +34,10 @@ def get_order(db: Session, order_id: int) -> OrderRead:
         raise HTTPException(status_code=404, detail="Order not found")
     return db_order
 
+def get_orders_by_user(db: Session, user_id: int) -> List[OrderRead]:
+    orders = db.query(Order).filter(Order.user_id == user_id).all()
+    return orders
+
 def update_order_status(db: Session, order_id: int, status: str) -> OrderRead:
     db_order = db.query(Order).filter(Order.id == order_id).first()
     if not db_order:

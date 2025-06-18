@@ -43,3 +43,9 @@ class OrderStatusUpdate(BaseModel):
 
     class Config:
         orm_mode = True
+
+class OrderCountResponse(BaseModel):
+    count: int
+
+    class Config:
+        orm_mode = True

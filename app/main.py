@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.v1.endpoints import category
 from app.api.v1.endpoints import orders
 from app.api.v1.endpoints import cart
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -33,3 +34,16 @@ app.include_router(category.router)
 app.include_router(orders.router)
 
 app.include_router(cart.router)
+
+origins = [
+    "http://localhost:5173",  # Vite dev server
+    "http://127.0.0.1:5173",  # Just in case
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,              # Add allowed origins here
+    allow_credentials=True,             # Needed for cookies/auth
+    allow_methods=["*"],                # Allow all HTTP methods
+    allow_headers=["*"],                # Allow all headers
+)

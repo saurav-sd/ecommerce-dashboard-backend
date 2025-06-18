@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
-from app.db.schemas.user import UserCreate, UserOut
+from app.db.schemas.user import UserCreate, UserOut, RefreshTokenSchema
 from app.db.models.user import User
 from app.crud.user import get_user_by_email, create_user
 from fastapi.security import OAuth2PasswordRequestForm
@@ -74,8 +74,8 @@ def refresh_access_token(refresh_token: str, db: Session = Depends(get_db)):
 
 
 @router.post("/logout")
-def logout_user(refresh_token: str, db: Session = Depends(get_db)):
-    db_token = db.query(RefreshToken).filter_by(token=refresh_token).first()
+def logout_user(payload: RefreshTokenSchema, db: Session = Depends(get_db)):
+    db_token = db.query(RefreshToken).filter_by(token=payload.refresh_token).first()
     if not db_token:
         raise HTTPException(status_code=404, detail="Token not found")
 
