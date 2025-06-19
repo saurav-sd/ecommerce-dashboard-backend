@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from app.db.models.product import Product
 from app.db.schemas.product import ProductCreate, ProductUpdate
 from typing import List, Optional
+from app.db.models.order import OrderItem
+from fastapi import HTTPException
 
 # Create a new product
 def create_product(db: Session, product: ProductCreate) -> Product:
@@ -38,6 +40,12 @@ def delete_product(db: Session, product_id: int) -> bool:
     db_product = db.query(Product).filter(Product.id == product_id).first()
     if not db_product:
         return False
+    
+    if db.query(OrderItem).filter(OrderItem.product_id == product_id).first():
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot delete product because it is associated with existing orders."
+        )
 
     db.delete(db_product)
     db.commit()

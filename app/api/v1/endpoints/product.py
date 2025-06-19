@@ -70,7 +70,7 @@ def delete_product_by_id(product_id: int, db: Session = Depends(get_db)):
     deleted = delete_product(db, product_id)
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
-    
+    return {"message": f"Product with ID {product_id} has been deleted successfully."}
 
 @routes.post("/upload-image/")
 async def upload_image(file: UploadFile = File(...)):
