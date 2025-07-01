@@ -49,3 +49,17 @@ class OrderCountResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class OrderItemOut(BaseModel):
+    product_id: int
+    quantity: int
+    price: float
+
+class OrderOut(BaseModel):
+    id: int
+    user_id: int
+    total_amount: float
+    payment_method: str
+    shipping_address: str
+    created_at: datetime
+    items: List[OrderItemOut]

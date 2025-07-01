@@ -6,6 +6,7 @@ from app.db.session import get_db
 from app.crud.cart import add_to_cart, get_cart_items, update_cart_item, remove_from_cart, clear_cart
 from app.core.security import get_current_active_user
 from app.db.models.user import User
+from app.db.models.cart import Cart
 
 router = APIRouter(prefix="/cart", tags=["Cart"])
 
@@ -54,14 +55,17 @@ def remove_item_from_cart(
     """
     Remove an item from the user's cart.
     """
-    cart_item = get_cart_items(db, current_user.id)
-    if not cart_item or cart_item.user_id != current_user.id:
+    cart_item = db.query(Cart).filter(Cart.id == cart_id, Cart.user_id == current_user.id).first()
+
+    if not cart_item:
         raise HTTPException(status_code=404, detail="Cart item not found")
-    remove_from_cart(db, cart_id)
+
+    db.delete(cart_item)
+    db.commit()
     return {"detail": "Item removed from cart"}
 
 @router.delete("/")
-def clear_cart(
+def Clear_cart(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
@@ -70,4 +74,3 @@ def clear_cart(
     """
     clear_cart(db, current_user.id)
     return {"detail": "Cart cleared successfully"}
-

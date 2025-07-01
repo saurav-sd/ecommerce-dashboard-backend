@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.v1.endpoints import category
 from app.api.v1.endpoints import orders
 from app.api.v1.endpoints import cart
+from app.api.v1.endpoints import checkout
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -34,6 +35,9 @@ app.include_router(category.router)
 app.include_router(orders.router)
 
 app.include_router(cart.router)
+
+app.include_router(checkout.router)
+
 
 origins = [
     "http://localhost:5173",  # Vite dev server
