@@ -8,6 +8,7 @@ from app.api.v1.endpoints import orders
 from app.api.v1.endpoints import cart
 from app.api.v1.endpoints import checkout
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.v1.endpoints import newsletter
 
 app = FastAPI()
 
@@ -37,6 +38,8 @@ app.include_router(orders.router)
 app.include_router(cart.router)
 
 app.include_router(checkout.router)
+
+app.include_router(newsletter.router)
 
 
 origins = [
