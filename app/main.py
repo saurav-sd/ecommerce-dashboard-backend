@@ -47,6 +47,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 origins = [
     "http://localhost:5173",  # Vite dev server
     "http://127.0.0.1:5173",  # Just in case
+    "https://ecommerce-frontend-sigma-blond.vercel.app",
 ]
 
 app.add_middleware(
