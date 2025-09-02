@@ -10,6 +10,7 @@ from app.api.v1.endpoints import checkout
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.endpoints import newsletter
 import os
+from pathlib import Path
 
 app = FastAPI()
 
@@ -40,10 +41,10 @@ app.include_router(checkout.router)
 
 app.include_router(newsletter.router)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, "../static")
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_DIR = BASE_DIR / "static"
 
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static") 
 
 origins = [
     "http://localhost:5173",  # Vite dev server
