@@ -91,14 +91,7 @@ def create_order_from_cart(db: Session, user_id: int, data: CheckoutSchema):
             quantity=item["quantity"],
             price=item["price"]
         )
-        for item in order_items:
-            order_item = OrderItem(
-                order_id=order.id,
-                product_id=item["product_id"],
-                quantity=item["quantity"],
-                price=item["price"]
-            )
-            db.add(order_item)
+        db.add(order_item)
 
     db.query(Cart).filter(Cart.user_id == user_id).delete()
     db.commit()
