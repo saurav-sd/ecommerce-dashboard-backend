@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.endpoints import newsletter
 import os
 from pathlib import Path
+from app.core.config import settings
 
 app = FastAPI()
 

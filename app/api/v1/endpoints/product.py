@@ -10,6 +10,7 @@ import shutil
 import uuid
 import os
 from sqlalchemy.exc import IntegrityError
+from app.cloudinary_config import cloudinary
 
 
 routes = APIRouter(prefix="/products", tags=["Products"])
@@ -74,12 +75,14 @@ def delete_product_by_id(product_id: int, db: Session = Depends(get_db)):
 
 @routes.post("/upload-image/")
 async def upload_image(file: UploadFile = File(...)):
-    file_extension = os.path.splitext(file.filename)[1]
-    file_name = f"{uuid.uuid4()}{file_extension}"
-    file_path = f"static/images/{file_name}"
+    try:
+        # Upload to Cloudinary
+        result = cloudinary.uploader.upload(file.file, folder="ecommerce_uploads")
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+        return {
+            "image_url": result.get("secure_url"),
+            "public_id": result.get("public_id")
+        }
 
-    image_url = f"/static/images/{file_name}"
-    return {"image_url": image_url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image upload failed: {str(e)}")
